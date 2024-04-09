@@ -6,7 +6,9 @@ function main() {
     exit 1
   fi
 
-  VALUE=$(cat config.json | jq -r ".envs.${1}.rpc")
+  DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+  VALUE=$(cat ${DIR}/../../config.json | jq -r ".envs.${1}.rpc")
   if ! jq -e . >/dev/null 2>&1 <<<$(echo $VALUE); then
     if [[ -z $VALUE ]]; then
       NETWORK=$1
@@ -28,7 +30,7 @@ function main() {
 }
 
 function rpc_from_network() {
-  echo $(cat config.json | jq -r ".rpc.${1}")
+  echo $(cat ${DIR}/../../config.json | jq -r ".rpc.${1}")
 }
 
 main $@
