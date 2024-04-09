@@ -11,12 +11,10 @@ function main() {
     shift
     FORK_ID=$(mod tenderly $1 $2)
     RPC=https://rpc.tenderly.co/fork/$FORK_ID
-  else
-    RPC=$(mod rpc $1 $2)
   fi
 
   if [ $# -lt 4 ]; then
-    echo "Usage: mod script <network> <l1 | l2> <script-contract> <function-selector> <args>"
+    echo "Usage: mod script <network> <l1 | l2 | null> <script-contract> <function-selector> <args>"
     exit 1
   fi
 

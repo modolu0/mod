@@ -23,6 +23,8 @@ main() {
     fi
   fi
 
+  cd $ENV
+
   call $@
 }
 
@@ -38,10 +40,20 @@ call() {
     a) CMD=address ;;
     pk) CMD=pk ;;
     e) CMD=e2e ;;
-    c) CMD=cast ;;
+    c) CMD=call ;;
     s) CMD=send ;;
     r) CMD=rpc ;;
   esac
+
+  if [[ $CMD == "balance" || $CMD == "script" || $CMD == "call" || $CMD == "send" ]]; then
+    if [[ $3 == "l1" || $3 == "l2" ]]; then
+      export RPC=$(mod rpc $2 $3)
+      shift 2
+    else
+      export RPC=$(mod rpc $2)
+      shift 1
+    fi
+  fi
 
   # Execute the command
   shift

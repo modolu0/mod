@@ -1,38 +1,34 @@
 #!/bin/bash
 
 function main() {
-  if [ $# -ne 2 ]; then
-    echo "Usage:: mod rpc <network> <l1 | l2>"
+  if [ $# -lt 1 ]; then
+    echo "Usage:: mod rpc <network> OR mod rpc <environment> <l1 | l2>"
     exit 1
   fi
 
-  if [ $1 == "devnet" ]; then
-    L1_RPC=http://localhost:8545
-    L2_RPC=http://localhost:9545
-  elif [ $1 == "testnet" ] || [ $1 == "sepolia" ]; then
-    L1_RPC=$ETH_SEPOLIA_URL
-    L2_RPC=https://sepolia.blast.io
-  elif [ $1 == "mainnet-testnet" ]; then
-    L1_RPC=$ETH_MAINNET_URL
-    L2_RPC=http://fork-mainnet-testnet.develop-l2.testblast.io:8545
-  elif [ $1 == "mainnet" ]; then
-    L1_RPC=$ETH_MAINNET_URL
-    L2_RPC="https://mainnet-rpc.blast.io/$BLAST_API_KEY"
+  VALUE=$(cat config.json | jq -r ".envs.${1}.rpc")
+  if ! jq -e . >/dev/null 2>&1 <<<$(echo $VALUE); then
+    if [[ -z $VALUE ]]; then
+      NETWORK=$1
+    else
+      NETWORK=$VALUE
+    fi
+
+    echo $(rpc_from_network $NETWORK)
   else
-    echo "Unsupported network $1"
-    exit 1
+    L1=$(rpc_from_network $(echo $VALUE | jq -r ".l1"))
+    L2=$(rpc_from_network $(echo $VALUE | jq -r ".l2"))
+    RPCS=$(jq -n "{ l1: \"$L1\", l2: \"$L2\" }")
+    if [[ $2 == "l1" || $2 == "l2" ]]; then
+      echo $RPCS | jq -r ".l1"
+    else
+      echo $RPCS | jq
+    fi
   fi
+}
 
-  if [ $2 == "l1" ]; then
-    RPC=$L1_RPC
-  elif [ $2 == "l2" ]; then
-    RPC=$L2_RPC
-  else
-    echo "Unrecognized layer $2"
-    exit 1
-  fi
-
-  echo $RPC
+function rpc_from_network() {
+  echo $(cat config.json | jq -r ".rpc.${1}")
 }
 
 main $@

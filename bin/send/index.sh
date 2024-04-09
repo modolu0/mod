@@ -1,15 +1,11 @@
 #!/bin/bash
 
 function main() {
-  if [ $# -lt 4 ]; then
-    echo "Usage: mod send <network> <l1 | l2> <address> <function-selector> <args>"
+  if [ $# -lt 2 ]; then
+    echo "Usage: mod send <network> <l1 | l2 | null> <address> <function-selector> <args>"
     exit 1
   fi
 
-  cd "${OPTIMISM_MONOREPO_ROOT}"
-
-  NETWORK=$1
-  LAYER=$2
   ADDRESS=$3
   if [[ $5 == "returns" ]]; then
     SELECTOR="$4 $5 $6"
@@ -19,8 +15,6 @@ function main() {
     PARAMS=${@:5}
   fi
   echo $SELECTOR
-
-  RPC=$(mod rpc $NETWORK $LAYER)
 
   if [ -z $ACCOUNT ]; then
     SENDER=""
