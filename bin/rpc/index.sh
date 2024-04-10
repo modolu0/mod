@@ -22,7 +22,7 @@ function main() {
     L2=$(rpc_from_network $(echo $VALUE | jq -r ".l2"))
     RPCS=$(jq -n "{ l1: \"$L1\", l2: \"$L2\" }")
     if [[ $2 == "l1" || $2 == "l2" ]]; then
-      echo $RPCS | jq -r ".l1"
+      echo $RPCS | jq -r ".$2"
     else
       echo $RPCS | jq
     fi
