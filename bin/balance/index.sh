@@ -10,7 +10,7 @@ function main() {
     exit 1
   fi
 
-  echo -e "$(cast balance --rpc-url $RPC $3 --ether) ${ORANGE}ETH ${NC}"
+  echo -e "$(cast balance --rpc-url $RPC $1 --ether) ${ORANGE}ETH ${NC}"
 }
 
 main $@

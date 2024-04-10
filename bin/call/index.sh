@@ -6,13 +6,13 @@ function main() {
     exit 1
   fi
 
-  ADDRESS=$3
-  if [[ $5 == "returns" ]]; then
-    SELECTOR="$4 $5 $6"
-    PARAMS=${@:7}
-  else
-    SELECTOR=$4
+  ADDRESS=$1
+  if [[ $3 == "returns" ]]; then
+    SELECTOR="$2 $3 $4"
     PARAMS=${@:5}
+  else
+    SELECTOR=$1
+    PARAMS=${@:2}
   fi
 
   cast call --rpc-url $RPC $ADDRESS "$SELECTOR" $PARAMS --keystore ~/.foundry/keystores

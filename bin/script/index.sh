@@ -13,14 +13,14 @@ function main() {
     RPC=https://rpc.tenderly.co/fork/$FORK_ID
   fi
 
-  if [ $# -lt 4 ]; then
+  if [ $# -lt 2 ]; then
     echo "Usage: mod script <network> <l1 | l2 | null> <script-contract> <function-selector> <args>"
     exit 1
   fi
 
-  SCRIPT_CONTRACT=$3
-  FUNCTION_NAME=$4
-  ARGS=${@:5}
+  SCRIPT_CONTRACT=$1
+  FUNCTION_NAME=$2
+  ARGS=${@:3}
 
   if [ -z $ACCOUNT ]; then
     SENDER=""
@@ -34,7 +34,7 @@ function main() {
   checkStatus
 
   echo "Syncing transactions"
-  SIG=$(echo $FUNCTION_NAME | cut -d "(" -f 1)
+  export SIG=$(echo $FUNCTION_NAME | cut -d "(" -f 1)
   forge script $SENDER --rpc-url $RPC $SCRIPT_CONTRACT --sig 'sync()'
 
   if [ ! -z $FORK_ID ]; then
