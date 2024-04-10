@@ -10,6 +10,7 @@ function main() {
     c) CMD=create ;;
     addr) CMD=address ;;
     l) CMD=list ;;
+    r) CMD=remove ;;
   esac
 
   $CMD ${@:2}
@@ -60,6 +61,12 @@ function address() {
 
 function list() {
   cast wallet list
+}
+
+function remove() {
+  ADDRESS=$(mod wallet address $1)
+  rm $ETH_KEYSTORE_DIR/$1
+  rm $ETH_KEYSTORE_DIR/$ADDRESS
 }
 
 main $@
