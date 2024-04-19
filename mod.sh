@@ -71,7 +71,7 @@ call() {
 
 get_config() {
   dir=$(pwd -P)
-  while [ -n "$dir" -a ! -f "$dir/modconfig.json" ]; do
+  while [ -n "$dir" -a ! -f "$dir/mod.config.json" ]; do
       dir=${dir%/*}
   done
   if [[ $dir != "" ]]; then
