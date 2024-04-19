@@ -23,7 +23,9 @@ main() {
     fi
   fi
 
-  cd $ENV
+  get_config
+
+  cd $PROJECT_DIR
 
   call $@
 }
@@ -64,6 +66,16 @@ call() {
   else
     echo "Error: Command not found!"
     exit 2
+  fi
+}
+
+get_config() {
+  dir=$(pwd -P)
+  while [ -n "$dir" -a ! -f "$dir/modconfig.json" ]; do
+      dir=${dir%/*}
+  done
+  if [[ $dir != "" ]]; then
+    export PROJECT_DIR=$dir
   fi
 }
 

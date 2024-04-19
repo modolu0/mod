@@ -8,9 +8,9 @@ function main() {
 
   DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-  VALUE=$(cat ${DIR}/../../config.json | jq -r ".envs.\"${1}\".rpc")
+  VALUE=$(cat ${PROJECT_DIR}/mod.config.json | jq -r ".envs.\"${1}\".rpc")
   if ! jq -e . >/dev/null 2>&1 <<<$(echo $VALUE); then
-    if [[ -z $VALUE ]]; then
+    if [[ -z $VALUE || $VALUE == "null" ]]; then
       NETWORK=$1
     else
       NETWORK=$VALUE
@@ -30,7 +30,7 @@ function main() {
 }
 
 function rpc_from_network() {
-  echo $(cat ${DIR}/../../config.json | jq -r ".rpc.\"${1}\"")
+  echo $(cat ${PROJECT_DIR}/mod.config.json | jq -r ".rpc.\"${1}\".url")
 }
 
 main $@
