@@ -49,7 +49,7 @@ function blastscan() {
     if [ $1 == "81457" ]; then
       URL="https://api.blastscan.io/api?apikey=$BLASTSCAN_API_KEY"
     else
-      URL="https://api-seoplia.blastscan.io/api?apikey=$BLASTSCAN_API_KEY"
+      URL="https://api-sepolia.blastscan.io/api?apikey=$BLASTSCAN_API_KEY"
     fi
     export ETHERSCAN_API_KEY=$BLASTSCAN_API_KEY
     forge verify-contract $2 \
