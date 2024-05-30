@@ -34,7 +34,7 @@ function main() {
 
   checkStatus
 
-  CHAIN_ID=$(cast chain-id $RPC)
+  CHAIN_ID=$(cast chain-id --rpc-url $RPC)
   if [ -f "./broadcast/${SCRIPT_CONTRACT}.s.sol/${CHAIN_ID}/deploy-latest.json" ]; then
       echo "Syncing transactions"
       export SIG=$(echo $FUNCTION_NAME | cut -d "(" -f 1)
