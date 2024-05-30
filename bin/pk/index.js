@@ -7,7 +7,7 @@ function main(account) {
   const keyObject = JSON.parse(fs.readFileSync(keystorePath, {encoding: "utf8"}));
   const privateKey = `0x${keyth.recover(process.env['CAST_PASSWORD'], keyObject).toString('hex')}`;
 
-  console.log(`Private Key: ${privateKey}`);
+  console.log(privateKey);
 }
 
 main(process.argv[2]);
