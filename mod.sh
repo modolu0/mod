@@ -49,9 +49,11 @@ call() {
 
   if [[ $CMD == "balance" || $CMD == "script" || $CMD == "call" || $CMD == "send" ]]; then
     if [[ $3 == "l1" || $3 == "l2" ]]; then
+      export DEPLOYMENT_CONTEXT=$(cat ${PROJECT_DIR}/mod.config.json | jq -r ".envs.\"${2}\".rpc.\"${3}\"")
       export RPC=$(mod rpc $2 $3)
       shift 2
     else
+      export DEPLOYMENT_CONTEXT=$(cat ${PROJECT_DIR}/mod.config.json | jq -r ".envs.\"${2}\".rpc")
       export RPC=$(mod rpc $2)
       shift 1
     fi

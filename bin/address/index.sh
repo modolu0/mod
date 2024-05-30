@@ -1,8 +1,8 @@
 #!/bin/bash
 
 function main() {
-  if [ $# -ne 2 ]; then
-    echo "Usage: mod script <network> <contract-name>"
+  if [ $# -lt 2 ]; then
+    echo "Usage: mod address <network> <contract-name>"
     exit 1
   fi
 

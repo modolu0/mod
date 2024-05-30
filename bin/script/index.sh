@@ -31,14 +31,18 @@ function main() {
   COMMAND="forge script --rpc-url $RPC $SENDER $SCRIPT_CONTRACT --sig $FUNCTION_NAME $ARGS"
   echo $COMMAND
   STRICT_DEPLOYMENT=false $COMMAND
+
   checkStatus
 
-  echo "Syncing transactions"
-  export SIG=$(echo $FUNCTION_NAME | cut -d "(" -f 1)
-  forge script $SENDER --rpc-url $RPC $SCRIPT_CONTRACT --sig 'sync()'
+  CHAIN_ID=$(cast chain-id $RPC)
+  if [ -f "./broadcast/${SCRIPT_CONTRACT}.s.sol/${CHAIN_ID}/deploy-latest.json" ]; then
+      echo "Syncing transactions"
+      export SIG=$(echo $FUNCTION_NAME | cut -d "(" -f 1)
+      forge script $SENDER --rpc-url $RPC $SCRIPT_CONTRACT --sig 'sync()'
 
-  if [ ! -z $FORK_ID ]; then
-    echo https://dashboard.tenderly.co/$TENDERLY_ORG/$TENDERLY_PROJECT/fork/$FORK_ID
+      if [ ! -z $FORK_ID ]; then
+        echo https://dashboard.tenderly.co/$TENDERLY_ORG/$TENDERLY_PROJECT/fork/$FORK_ID
+      fi
   fi
 }
 
