@@ -54,7 +54,7 @@ call() {
       export RPC=$(mod rpc $2 $3)
       shift 2
     else
-      export DEPLOYMENT_CONTEXT=$2
+      export DEPLOYMENT_ENVIRONMENT=$2
       export RPC=$(mod rpc $2)
       shift 1
     fi
