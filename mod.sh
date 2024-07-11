@@ -48,15 +48,34 @@ call() {
   esac
 
   if [[ $CMD == "balance" || $CMD == "script" || $CMD == "call" || $CMD == "send" ]]; then
-    if [[ $3 == "l1" || $3 == "l2" ]]; then
-      export DEPLOYMENT_ENVIRONMENT=$2
-      export DEPLOYMENT_LAYER=$3
-      export RPC=$(mod rpc $2 $3)
-      shift 2
+    if [[ $FORK == "true" ]]; then
+      if [[ $3 == "l1" || $3 == "l2" ]]; then
+        export DEPLOYMENT_ENVIRONMENT=$2
+        export DEPLOYMENT_LAYER=$3
+        export FORK_ID=$(mod tenderly $2 $3)
+        export RPC=https://rpc.tenderly.co/fork/$FORK_ID
+        shift 2
+      else
+        export DEPLOYMENT_ENVIRONMENT=$2
+        export FORK_ID=$(mod tenderly $2)
+        export RPC=https://rpc.tenderly.co/fork/$FORK_ID
+        shift 1
+      fi
+      echo
+      echo https://dashboard.tenderly.co/$TENDERLY_ORG/$TENDERLY_PROJECT/fork/$FORK_ID
+      echo
     else
-      export DEPLOYMENT_ENVIRONMENT=$2
-      export RPC=$(mod rpc $2)
-      shift 1
+      export VERIFY=$(cat ${PROJECT_DIR}/mod.config.json | jq -r ".envs.\"${2}\".verify")
+      if [[ $3 == "l1" || $3 == "l2" ]]; then
+        export DEPLOYMENT_ENVIRONMENT=$2
+        export DEPLOYMENT_LAYER=$3
+        export RPC=$(mod rpc $2 $3)
+        shift 2
+      else
+        export DEPLOYMENT_ENVIRONMENT=$2
+        export RPC=$(mod rpc $2)
+        shift 1
+      fi
     fi
   fi
 

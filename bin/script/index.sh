@@ -7,12 +7,6 @@ function checkStatus {
 }
 
 function main() {
-  if [ $1 = "fork" ]; then
-    shift
-    FORK_ID=$(mod tenderly $1 $2)
-    RPC=https://rpc.tenderly.co/fork/$FORK_ID
-  fi
-
   if [ $# -lt 2 ]; then
     echo "Usage: mod script <network> <l1 | l2 | null> <script-contract> <function-selector> <args>"
     exit 1
@@ -25,24 +19,35 @@ function main() {
   if [ -z $ACCOUNT ]; then
     SENDER=""
   else
-    SENDER="--sender $(cast wallet address --account $ACCOUNT) --account $ACCOUNT"
+    CALLER=$(cast wallet address --account $ACCOUNT)
+    SENDER="--sender $CALLER --account $ACCOUNT"
   fi
 
   COMMAND="forge script --rpc-url $RPC $SENDER $SCRIPT_CONTRACT --sig $FUNCTION_NAME $ARGS"
   echo $COMMAND
+
+  CHAIN_ID=$(cast chain-id --rpc-url $RPC)
+  if [ $VERIFY = 'true' ]; then
+    echo "WARNING: this script will run against"
+    echo "chainId: ${CHAIN_ID}"
+    echo "caller: ${CALLER}"
+    read -p "Proceed: " response
+    if [ $response = "y" ] || [ $response = "yes" ]; then
+      continue
+    else
+      echo "Script aborted"
+      exit 1
+    fi
+  fi
+
   STRICT_DEPLOYMENT=false $COMMAND
 
   checkStatus
 
-  CHAIN_ID=$(cast chain-id --rpc-url $RPC)
   if [ -f "./broadcast/${SCRIPT_CONTRACT}.s.sol/${CHAIN_ID}/deploy-latest.json" ]; then
       echo "Syncing transactions"
       export SIG=$(echo $FUNCTION_NAME | cut -d "(" -f 1)
       forge script $SENDER --rpc-url $RPC $SCRIPT_CONTRACT --sig 'sync()'
-
-      if [ ! -z $FORK_ID ]; then
-        echo https://dashboard.tenderly.co/$TENDERLY_ORG/$TENDERLY_PROJECT/fork/$FORK_ID
-      fi
   fi
 }
 

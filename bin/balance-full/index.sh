@@ -6,7 +6,7 @@ NC='\033[0m'
 
 function main() {
   if [ $# -lt 1 ]; then
-    echo "Usage: mod balance <address>"
+    echo "Usage: mod balance-full <address>"
     exit 1
   fi
   rpcs_string=$(cat mod.config.json | jq -r ".rpc" | jq -r "keys[]")
