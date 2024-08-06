@@ -27,13 +27,13 @@ function main() {
   echo $COMMAND
 
   CHAIN_ID=$(cast chain-id --rpc-url $RPC)
-  if [ $VERIFY = 'true' ]; then
+  if [[ $VERIFY == 'true' ]]; then
     echo "WARNING: this script will run against"
     echo "chainId: ${CHAIN_ID}"
     echo "caller: ${CALLER}"
     read -p "Proceed: " response
     if [ $response = "y" ] || [ $response = "yes" ]; then
-      continue
+      echo "Executing"
     else
       echo "Script aborted"
       exit 1
@@ -45,9 +45,13 @@ function main() {
   checkStatus
 
   if [ -f "./broadcast/${SCRIPT_CONTRACT}.s.sol/${CHAIN_ID}/deploy-latest.json" ]; then
-      echo "Syncing transactions"
-      export SIG=$(echo $FUNCTION_NAME | cut -d "(" -f 1)
-      forge script $SENDER --rpc-url $RPC $SCRIPT_CONTRACT --sig 'sync()'
+    echo "Syncing transactions"
+    export SIG=$(echo $FUNCTION_NAME | cut -d "(" -f 1)
+    forge script $SENDER --rpc-url $RPC $SCRIPT_CONTRACT --sig 'sync()'
+  fi
+
+  if [[ $FORK == "true" ]]; then
+    echo "Fork url: https://dashboard.tenderly.co/$TENDERLY_ORG/$TENDERLY_PROJECT/fork/$FORK_ID"
   fi
 }
 
