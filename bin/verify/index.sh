@@ -12,6 +12,8 @@ function main() {
     blastscan ${@:2}
   elif [ $1 = "tenderly" ]; then
     tenderly ${@:2}
+  elif [ $1 = "tenderly-fork" ]; then
+    tenderly_fork ${@:2}
   else
     echo "Verifier not supported"
   fi
@@ -37,6 +39,16 @@ function tenderly() {
     $3 \
     --verifier-url "https://api.tenderly.co/api/v1/account/$TENDERLY_ORG/project/$TENDERLY_PROJECT/etherscan/verify/network/${1}" \
     --chain-id $1 \
+    --watch \
+    --etherscan-api-key $TENDERLY_API_KEY \
+    ${@:4}
+}
+
+function tenderly_fork() {
+  export ETHERSCAN_API_KEY=""
+  forge verify-contract $2 \
+    $3 \
+    --verifier-url "https://api.tenderly.co/api/v1/account/$TENDERLY_ORG/project/$TENDERLY_PROJECT/etherscan/verify/fork/${1}" \
     --watch \
     --etherscan-api-key $TENDERLY_API_KEY \
     ${@:4}

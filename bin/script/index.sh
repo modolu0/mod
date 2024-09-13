@@ -44,9 +44,9 @@ function main() {
 
   checkStatus
 
-  if [ -f "./broadcast/${SCRIPT_CONTRACT}.s.sol/${CHAIN_ID}/deploy-latest.json" ]; then
+  export SIG=$(echo $FUNCTION_NAME | cut -d "(" -f 1)
+  if [ -f "./broadcast/${SCRIPT_CONTRACT}.s.sol/${CHAIN_ID}/${SIG}-latest.json" ]; then
     echo "Syncing transactions"
-    export SIG=$(echo $FUNCTION_NAME | cut -d "(" -f 1)
     forge script $SENDER --rpc-url $RPC $SCRIPT_CONTRACT --sig 'sync()'
   fi
 
